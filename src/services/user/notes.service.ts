@@ -11,10 +11,11 @@ import type {
   DeleteNoteResponse,
 } from "@/types/notes";
 import { BASE_API } from "../api.config";
+import { query } from "@/libs/query";
 
 const useGetNotes = () => {
   return useQuery<NotesResponse>({
-    queryKey: ["notes"],
+    queryKey: ["QKEY_NOTES"],
     queryFn: async () => {
       const response = await fetch(`${BASE_API}/notes`, {
         headers: baseHeaders(),
@@ -30,7 +31,7 @@ const useGetNotes = () => {
 
 const useGetNoteById = (noteId: string) => {
   return useQuery<NoteResponse>({
-    queryKey: ["note", noteId],
+    queryKey: ["QKEY_NOTE", noteId],
     queryFn: async () => {
       const response = await fetch(`${BASE_API}/notes/${noteId}`, {
         headers: baseHeaders(),
@@ -57,6 +58,9 @@ const useCreateNote = () => {
       }
       return response.json();
     },
+    onSuccess: () => {
+      query.invalidateQueries({ queryKey: ["QKEY_NOTES"] });
+    }
   });
 }
 
@@ -81,6 +85,9 @@ const useUpdateNote = () => {
         }
         return response.json();
       },
+      onSuccess: () => {
+        query.invalidateQueries({ queryKey: ["QKEY_NOTES"] });
+      }
     });
 }
 
@@ -96,6 +103,9 @@ const useDeleteNote = () => {
       }
       return response.json();
     },
+    onSuccess: () => {
+      query.invalidateQueries({ queryKey: ["QKEY_NOTES"] });
+    }
   });
 }
 
