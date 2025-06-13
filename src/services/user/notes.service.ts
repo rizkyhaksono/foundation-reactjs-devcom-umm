@@ -10,12 +10,13 @@ import type {
   UpdateNoteRequest,
   DeleteNoteResponse,
 } from "@/types/notes";
+import { BASE_API } from "../api.config";
 
 const useGetNotes = () => {
   return useQuery<NotesResponse>({
     queryKey: ["notes"],
     queryFn: async () => {
-      const response = await fetch("http://localhost:3000/api/notes", {
+      const response = await fetch(`${BASE_API}/notes`, {
         headers: baseHeaders(),
       });
       if (!response.ok) {
@@ -31,7 +32,7 @@ const useGetNoteById = (noteId: string) => {
   return useQuery<NoteResponse>({
     queryKey: ["note", noteId],
     queryFn: async () => {
-      const response = await fetch(`http://localhost:3000/api/notes/${noteId}`, {
+      const response = await fetch(`${BASE_API}/notes/${noteId}`, {
         headers: baseHeaders(),
       });
       if (!response.ok) {
@@ -46,7 +47,7 @@ const useGetNoteById = (noteId: string) => {
 const useCreateNote = () => {
   return useMutation<NoteResponse, Error, CreateNoteRequest>({
     mutationFn: async (newNote) => {
-      const response = await fetch("http://localhost:3000/api/notes", {
+      const response = await fetch(`${BASE_API}/notes`, {
         method: "POST",
         headers: baseHeaders(),
         body: JSON.stringify(newNote),
@@ -70,7 +71,7 @@ const useUpdateNote = () => {
         noteId,
         updatedNote
       }) => {
-        const response = await fetch(`http://localhost:3000/api/notes/${noteId}`, {
+        const response = await fetch(`${BASE_API}/notes/${noteId}`, {
           method: "PUT",
           headers: baseHeaders(),
           body: JSON.stringify(updatedNote),
@@ -86,7 +87,7 @@ const useUpdateNote = () => {
 const useDeleteNote = () => {
   return useMutation<DeleteNoteResponse, Error, string>({
     mutationFn: async (noteId) => {
-      const response = await fetch(`http://localhost:3000/api/notes/${noteId}`, {
+      const response = await fetch(`${BASE_API}/notes/${noteId}`, {
         method: "DELETE",
         headers: baseHeaders(),
       });

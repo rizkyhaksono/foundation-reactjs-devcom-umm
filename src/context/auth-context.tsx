@@ -7,11 +7,22 @@ type User = {
   email: string;
 } | null;
 
+interface LoginResponse {
+  message: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    createdAt: string;
+  };
+  token: string;
+}
+
 type AuthContextType = {
   user: User;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (token: string) => void;
+  login: (response: LoginResponse | string) => void;
   logout: () => void;
 };
 
@@ -25,21 +36,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
         const token = localStorage.getItem('authToken');
         if (token) {
-          // You could verify the token here or fetch user data
-          // For now, we'll just assume the token is valid
-          const userData = { id: '1', name: 'User', email: 'user@example.com' };
+          // Get saved user data if available
+          const userDataString = localStorage.getItem('userData');
+          let userData: User;
+
+          if (userDataString) {
+            userData = JSON.parse(userDataString);
+          } else {
+            // Fallback if user data not found
+            userData = { id: '1', name: 'User', email: 'user@example.com' };
+          }
+
           setUser(userData);
           setIsAuthenticated(true);
         }
       } catch (error) {
         console.error('Authentication error:', error);
         localStorage.removeItem('authToken');
+        localStorage.removeItem('userData');
       } finally {
         setIsLoading(false);
       }
@@ -47,16 +66,34 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     checkAuthStatus();
   }, []);
+  const login = (response: LoginResponse | string) => {
+    let token: string;
+    let userData: User;
 
-  const login = (token: string) => {
+    if (typeof response === 'string') {
+      // Handle the case where only the token is passed
+      token = response;
+      // Try to decode the token to get user info or set default values
+      userData = { id: '1', name: 'User', email: 'user@example.com' };
+    } else {
+      // Handle the full response object
+      token = response.token;
+      userData = {
+        id: response.user.id,
+        name: response.user.name,
+        email: response.user.email
+      };
+      // Also store user data in localStorage
+      localStorage.setItem('userData', JSON.stringify(response.user));
+    }
+
     localStorage.setItem('authToken', token);
-    const userData = { id: '1', name: 'User', email: 'user@example.com' };
     setUser(userData);
     setIsAuthenticated(true);
   };
-
   const logout = () => {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('userData');
     setUser(null);
     setIsAuthenticated(false);
   };

@@ -2,22 +2,24 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useLoginUser } from '@/services/auth/auth.service';
 import { useAuth } from '@/context/use-auth';
+import Input from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { useForm } from 'react-hook-form';
+import type { LoginFormValues } from '@/types/auth';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>();
   const { mutate: loginUser, isPending } = useLoginUser();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = (data: LoginFormValues) => {
     setError('');
-    loginUser({ email, password }, {
+    loginUser(data, {
       onSuccess: (data) => {
-        login(data.token);
+        login(data);
         navigate('/dashboard');
       },
       onError: (error) => {
@@ -38,45 +40,43 @@ const LoginPage = () => {
             {error}
           </div>
         )}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Input
+            id="email"
+            type="email"
+            label="Email address"
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Invalid email address"
+              }
+            })}
+            error={errors.email?.message}
+          />
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email address
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-            />
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={isPending}
-              className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-75"
-            >
-              {isPending ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
+          <Input
+            id="password"
+            type="password"
+            label="Password"
+            {...register("password", {
+              required: "Password is required",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters"
+              }
+            })}
+            error={errors.password?.message}
+          />
+          <Button
+            type="submit"
+            variant="primary"
+            size="medium"
+            isLoading={isPending}
+            className="w-full"
+          >
+            Sign in
+          </Button>
         </form>
 
         <div className="mt-4 text-center text-sm text-gray-600">

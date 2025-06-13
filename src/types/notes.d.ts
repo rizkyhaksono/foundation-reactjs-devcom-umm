@@ -25,13 +25,13 @@ export interface NoteResponse {
 }
 
 export interface CreateNoteRequest {
-  message: string;
-  note: Note;
+  title: string;
+  content: string;
 }
 
 export interface UpdateNoteRequest {
-  message: string;
-  note: Note;
+  title: string;
+  content: string;
 }
 
 export interface DeleteNoteResponse {

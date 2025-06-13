@@ -1,8 +1,17 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Button } from "../ui/Button";
 import { ThemeToggle } from "./theme-toggle";
+import { useAuth } from "@/context/use-auth";
 
 const Navbar = () => {
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <header className="flex justify-center sticky top-0 z-50 w-full border-b border-b-black/10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center justify-between">
@@ -14,29 +23,44 @@ const Navbar = () => {
             <span className="font-bold text-xl">NoteFlow</span>
           </Link>
           <nav className="hidden md:flex gap-6">
-            <Link to="/features" className="text-muted-foreground hover:text-foreground transition-colors">
-              Features
+            <Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">
+              About
             </Link>
-            <Link to="/templates" className="text-muted-foreground hover:text-foreground transition-colors">
-              Templates
-            </Link>
-            <Link to="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">
-              Pricing
+            <Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
+              Contact
             </Link>
           </nav>
-        </div>
-        <div className="flex items-center gap-4">
+        </div>        <div className="flex items-center gap-4">
           <ThemeToggle />
-          <Link to="/login">
-            <Button variant="secondary" size="medium">
-              Log in
-            </Button>
-          </Link>
-          <Link to="/register">
-            <Button variant="primary" size="medium">
-              Sign up
-            </Button>
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <Link to="/dashboard">
+                <Button variant="secondary" size="medium">
+                  Dashboard
+                </Button>
+              </Link>
+              <Button
+                variant="primary"
+                size="medium"
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link to="/login">
+                <Button variant="secondary" size="medium">
+                  Log in
+                </Button>
+              </Link>
+              <Link to="/register">
+                <Button variant="primary" size="medium">
+                  Sign up
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

@@ -1,23 +1,23 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useRegisterUser } from '@/services/auth/auth.service';
+import Input from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { useForm } from 'react-hook-form';
+import type { RegisterFormValues } from '@/types/auth';
 
 const RegisterPage = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
   const navigate = useNavigate();
 
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormValues>();
   const { mutate: registerMutation, isPending } = useRegisterUser();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = (data: RegisterFormValues) => {
     setError('');
 
     try {
-      registerMutation({ name, email, password }, {
+      registerMutation(data, {
         onSuccess: (data) => {
           navigate('/login');
           console.log('User registered successfully:', data);
@@ -43,59 +43,53 @@ const RegisterPage = () => {
             {error}
           </div>
         )}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Input
+            id="name"
+            type="text"
+            label="Name"
+            {...register("name", {
+              required: "Name is required"
+            })}
+            error={errors.name?.message}
+          />
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Name
-            </label>
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-            />
-          </div>
+          <Input
+            id="email"
+            type="email"
+            label="Email address"
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Invalid email address"
+              }
+            })}
+            error={errors.email?.message}
+          />
 
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email address
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-            />
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={isPending}
-              className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-75"
-            >
-              {isPending ? 'Registering...' : 'Register'}
-            </button>
-          </div>
+          <Input
+            id="password"
+            type="password"
+            label="Password"
+            {...register("password", {
+              required: "Password is required",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters"
+              }
+            })}
+            error={errors.password?.message}
+          />
+          <Button
+            type="submit"
+            variant="primary"
+            size="medium"
+            isLoading={isPending}
+            className="w-full"
+          >
+            Register
+          </Button>
         </form>
 
         <div className="mt-4 text-center text-sm text-gray-600">
