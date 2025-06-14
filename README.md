@@ -83,7 +83,7 @@ src/
 3. Set up environment variables:
     Create a `.env` file in the root directory and add your environment variables. Example:
     ```env
-    VITE_API_URL=http://localhost:3000/api
+    VITE_API_URL=https://foundation.express.natee.my.id/api
     ```
 
 4. Start the development server:
