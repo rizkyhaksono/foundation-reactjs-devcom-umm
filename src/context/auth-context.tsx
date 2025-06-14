@@ -41,14 +41,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       try {
         const token = localStorage.getItem('authToken');
         if (token) {
-          // Get saved user data if available
           const userDataString = localStorage.getItem('userData');
           let userData: User;
 
           if (userDataString) {
             userData = JSON.parse(userDataString);
           } else {
-            // Fallback if user data not found
             userData = { id: '1', name: 'User', email: 'user@example.com' };
           }
 
@@ -71,19 +69,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     let userData: User;
 
     if (typeof response === 'string') {
-      // Handle the case where only the token is passed
       token = response;
-      // Try to decode the token to get user info or set default values
       userData = { id: '1', name: 'User', email: 'user@example.com' };
     } else {
-      // Handle the full response object
       token = response.token;
       userData = {
         id: response.user.id,
         name: response.user.name,
         email: response.user.email
       };
-      // Also store user data in localStorage
       localStorage.setItem('userData', JSON.stringify(response.user));
     }
 

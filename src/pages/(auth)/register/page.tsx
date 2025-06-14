@@ -1,54 +1,64 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { useRegisterUser } from '@/services/auth/auth.service';
-import Input from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
 import { useForm } from 'react-hook-form';
+import { useRegisterUser } from '@/services/auth/auth.service';
 import type { RegisterFormValues } from '@/types/auth';
+import { Button } from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import { useAuth } from '@/hooks/use-auth';
 
 const RegisterPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormValues>();
-  const { mutate: registerMutation, isPending } = useRegisterUser();
+  const {
+    register: registerField,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<RegisterFormValues>();
+
+  const { mutate: registerUser, isPending } = useRegisterUser();
+
+  if (isAuthenticated) navigate('/dashboard');
 
   const onSubmit = (data: RegisterFormValues) => {
     setError('');
-
-    try {
-      registerMutation(data, {
-        onSuccess: (data) => {
-          navigate('/login');
-          console.log('User registered successfully:', data);
-        },
-        onError: (err) => {
-          setError(err instanceof Error ? err.message : 'Registration failed');
-        }
-      })
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed');
-    }
+    registerUser(data, {
+      onSuccess: () => {
+        navigate('/login');
+      },
+      onError: (registrationError) => {
+        setError(
+          registrationError instanceof Error
+            ? registrationError.message
+            : 'Registration failed. Please try again.'
+        );
+      }
+    });
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-        <Link to="/">
-          <h1 className="mb-6 text-center text-2xl font-bold text-gray-900">Create an account</h1>
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="w-full max-w-md rounded-lg bg-card p-8 shadow-md border">
+        <Link to={"/"}>
+          <div className="mb-6 text-center">
+            <h1 className="text-2xl font-bold">Create an account</h1>
+          </div>
         </Link>
 
         {error && (
-          <div className="mb-4 rounded-md bg-red-50 p-4 text-sm text-red-700">
+          <div className="mb-4 rounded-md bg-destructive/10 p-4 text-sm text-destructive">
             {error}
           </div>
         )}
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
             id="name"
             type="text"
             label="Name"
-            {...register("name", {
+            {...registerField("name", {
               required: "Name is required"
             })}
             error={errors.name?.message}
@@ -58,7 +68,7 @@ const RegisterPage = () => {
             id="email"
             type="email"
             label="Email address"
-            {...register("email", {
+            {...registerField("email", {
               required: "Email is required",
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -72,7 +82,7 @@ const RegisterPage = () => {
             id="password"
             type="password"
             label="Password"
-            {...register("password", {
+            {...registerField("password", {
               required: "Password is required",
               minLength: {
                 value: 6,
@@ -81,26 +91,30 @@ const RegisterPage = () => {
             })}
             error={errors.password?.message}
           />
+
           <Button
             type="submit"
-            variant="primary"
-            size="medium"
-            isLoading={isPending}
+            variant="default"
+            size="default"
+            disabled={isPending}
             className="w-full"
           >
-            Register
+            {isPending ? 'Creating account...' : 'Register'}
           </Button>
         </form>
 
-        <div className="mt-4 text-center text-sm text-gray-600">
+        <div className="mt-6 text-center text-sm text-muted-foreground">
           Already have an account?{' '}
-          <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+          <Link
+            to="/login"
+            className="font-medium text-primary hover:underline"
+          >
             Sign in
           </Link>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default RegisterPage;

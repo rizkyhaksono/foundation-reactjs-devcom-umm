@@ -34,17 +34,17 @@ const Modal = ({
         <div className="flex justify-end gap-3">
           <Button
             variant="secondary"
-            size="medium"
+            size="default"
             onClick={onClose}
             disabled={isDeleting}
           >
             Cancel
           </Button>
           <Button
-            variant="primary"
-            size="medium"
+            variant="default"
+            size="default"
             onClick={onConfirm}
-            isLoading={isDeleting}
+            disabled={isDeleting}
             className="bg-red-600 hover:bg-red-700"
           >
             Delete

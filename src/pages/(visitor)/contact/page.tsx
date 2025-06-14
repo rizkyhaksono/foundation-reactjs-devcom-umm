@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import Navbar from '@/components/layouts/Navbar';
+import Navbar from '@/components/layouts/navbar';
 import Footer from '@/components/layouts/footer';
+import { Button } from '@/components/ui/Button';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -63,12 +64,12 @@ const ContactPage = () => {
               required
             />
           </div>
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          <Button
+            variant={'default'}
+            size={'default'}
           >
             Send Message
-          </button>
+          </Button>
         </form>
       </div>
       <Footer />

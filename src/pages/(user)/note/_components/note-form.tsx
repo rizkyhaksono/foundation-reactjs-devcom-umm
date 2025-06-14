@@ -1,6 +1,6 @@
-import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import { useForm } from 'react-hook-form';
 
 interface NoteFormValues {
   title: string;
@@ -80,9 +80,9 @@ const NoteForm = ({
       <div className="flex justify-end">
         <Button
           type="submit"
-          variant="primary"
-          size="medium"
-          isLoading={isSubmitting}
+          variant="default"
+          size="default"
+          disabled={isSubmitting}
         >
           {submitLabel}
         </Button>
