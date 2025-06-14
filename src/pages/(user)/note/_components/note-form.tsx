@@ -1,21 +1,7 @@
 import { Button } from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { useForm } from 'react-hook-form';
-
-interface NoteFormValues {
-  title: string;
-  content: string;
-}
-
-interface NoteFormProps {
-  defaultValues?: {
-    title: string;
-    content: string;
-  };
-  onSubmit: (data: NoteFormValues) => void;
-  isSubmitting: boolean;
-  submitLabel: string;
-}
+import type { NoteFormProps, NoteFormValues } from '@/types/notes';
 
 const NoteForm = ({
   defaultValues = { title: '', content: '' },

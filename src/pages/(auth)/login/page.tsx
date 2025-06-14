@@ -30,7 +30,7 @@ const LoginPage = () => {
         navigate('/dashboard');
       },
       onError: (loginError) => {
-        setError(loginError.message || 'Login failed. Please try again.');
+        setError(loginError.message ?? 'Login failed. Please try again.');
       }
     });
   };

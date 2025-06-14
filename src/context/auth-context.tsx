@@ -36,18 +36,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
         const token = localStorage.getItem('authToken');
         if (token) {
           const userDataString = localStorage.getItem('userData');
-          let userData: User;
+          let userData: User = null;
 
           if (userDataString) {
             userData = JSON.parse(userDataString);
-          } else {
-            userData = { id: '1', name: 'User', email: 'user@example.com' };
           }
 
           setUser(userData);
@@ -64,13 +63,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     checkAuthStatus();
   }, []);
+
   const login = (response: LoginResponse | string) => {
     let token: string;
     let userData: User;
 
     if (typeof response === 'string') {
       token = response;
-      userData = { id: '1', name: 'User', email: 'user@example.com' };
+      userData = null;
     } else {
       token = response.token;
       userData = {
@@ -85,12 +85,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setUser(userData);
     setIsAuthenticated(true);
   };
+
   const logout = () => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userData');
     setUser(null);
     setIsAuthenticated(false);
   };
+
   const value = useMemo(() => {
     return { user, isLoading, isAuthenticated, login, logout };
   }, [user, isLoading, isAuthenticated]);

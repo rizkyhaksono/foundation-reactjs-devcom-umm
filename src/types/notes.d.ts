@@ -24,16 +24,26 @@ export interface NoteResponse {
   note: Note;
 }
 
-export interface CreateNoteRequest {
-  title: string;
-  content: string;
-}
-
-export interface UpdateNoteRequest {
-  title: string;
-  content: string;
-}
-
 export interface DeleteNoteResponse {
   message: string;
+}
+
+export interface NoteFormValues {
+  title: string;
+  content: string;
+}
+
+export interface NoteFormProps {
+  defaultValues?: {
+    title: string;
+    content: string;
+  };
+  onSubmit: (data: NoteFormValues) => void;
+  isSubmitting: boolean;
+  submitLabel: string;
+}
+
+export interface NoteCardProps {
+  note: Note;
+  onDelete: (id: string) => void;
 }

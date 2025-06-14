@@ -6,8 +6,7 @@ import { baseHeaders } from "../header.config";
 import type {
   NotesResponse,
   NoteResponse,
-  CreateNoteRequest,
-  UpdateNoteRequest,
+  NoteFormValues,
   DeleteNoteResponse,
 } from "@/types/notes";
 import { BASE_API } from "../api.config";
@@ -46,7 +45,7 @@ const useGetNoteById = (noteId: string) => {
 }
 
 const useCreateNote = () => {
-  return useMutation<NoteResponse, Error, CreateNoteRequest>({
+  return useMutation<NoteResponse, Error, NoteFormValues>({
     mutationFn: async (newNote) => {
       const response = await fetch(`${BASE_API}/notes`, {
         method: "POST",
@@ -69,7 +68,7 @@ const useUpdateNote = () => {
     NoteResponse,
     Error, {
       noteId: string;
-      updatedNote: UpdateNoteRequest
+      updatedNote: NoteFormValues
     }>({
       mutationFn: async ({
         noteId,

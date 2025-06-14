@@ -1,14 +1,9 @@
 import Modal from '@/components/ui/Modal';
 import { formatDate } from '@/lib/format-date';
-import type { Note } from '@/types/notes';
+import type { NoteCardProps } from '@/types/notes';
 import { Eye, Pencil, Trash } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
-
-interface NoteCardProps {
-  note: Note;
-  onDelete: (id: string) => void;
-}
 
 const NoteCard = ({ note, onDelete }: NoteCardProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);

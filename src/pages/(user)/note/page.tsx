@@ -3,18 +3,15 @@ import { useNavigate, Link } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useCreateNote } from '@/services/user/notes.service';
 import NoteForm from '@/pages/(user)/note/_components/note-form';
+import type { NoteFormValues } from '@/types/notes';
 
-type NoteFormData = {
-  title: string;
-  content: string;
-};
 
 const NewNotePage = () => {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const { mutate: createNote, isPending } = useCreateNote();
 
-  const handleCreate = (formData: NoteFormData) => {
+  const handleCreate = (formData: NoteFormValues) => {
     setError(null);
 
     createNote(formData, {

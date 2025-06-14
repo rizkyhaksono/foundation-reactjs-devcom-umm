@@ -10,12 +10,7 @@ import NoteForm from '@/pages/(user)/note/_components/note-form';
 import Modal from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { formatDate } from '@/lib/format-date';
-import type { Note } from '@/types/notes';
-
-type UpdateNoteData = {
-  title: string;
-  content: string;
-};
+import type { Note, NoteFormValues } from '@/types/notes';
 
 const NoteDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -33,7 +28,7 @@ const NoteDetailPage = () => {
   const { mutate: updateNote, isPending: isUpdating } = useUpdateNote();
   const { mutate: deleteNote, isPending: isDeleting } = useDeleteNote();
 
-  const handleUpdate = (formData: UpdateNoteData) => {
+  const handleUpdate = (formData: NoteFormValues) => {
     if (!data?.note) return;
 
     updateNote({
@@ -121,7 +116,7 @@ const NoteDetailPage = () => {
 
 type NoteEditViewProps = {
   note: Note;
-  onUpdate: (data: UpdateNoteData) => void;
+  onUpdate: (data: NoteFormValues) => void;
   onCancel: () => void;
   isUpdating: boolean;
 };
