@@ -1,9 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
+import { BASE_API } from "../api.config";
 
 const useLoginUser = () => {
   return useMutation({
     mutationFn: async (formData: { email: string; password: string }) => {
-      const response = await fetch("http://localhost:3000/api/auth/login", {
+      const response = await fetch(`${BASE_API}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -23,7 +24,7 @@ const useLoginUser = () => {
 const useRegisterUser = () => {
   return useMutation({
     mutationFn: async (formData: { name: string; email: string; password: string }) => {
-      const response = await fetch("http://localhost:3000/api/auth/register", {
+      const response = await fetch(`${BASE_API}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
