@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { QueryClientProvider } from '@tanstack/react-query';
 import { query } from "@/libs/query";
 import '@/index.css';
-import App from '@/app';
+import App from '@/App';
 import AboutPage from '@/pages/(visitor)/about/page';
 import ContactPage from '@/pages/(visitor)/contact/page';
 import LoginPage from '@/pages/(auth)/login/page';
