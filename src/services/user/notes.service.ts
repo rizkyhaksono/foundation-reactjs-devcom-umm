@@ -10,7 +10,7 @@ import type {
   DeleteNoteResponse,
 } from "@/types/notes";
 import { BASE_API } from "../api.config";
-import { query } from "@/libs/query";
+import { query } from "@/lib/query";
 
 const useGetNotes = () => {
   return useQuery<NotesResponse>({

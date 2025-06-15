@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from "react-router";
 import { QueryClientProvider } from '@tanstack/react-query';
-import { query } from "@/libs/query";
+import { query } from "@/lib/query";
 import '@/index.css';
 import App from '@/App';
 import AboutPage from '@/pages/(visitor)/about/page';
